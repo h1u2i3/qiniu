@@ -27,7 +27,11 @@ defmodule Qiniu.HTTP do
     if opts[:raw] do
       response
     else
-      %{response | body: Poison.decode!(response.body)}
+      if response.body == "" do
+        %{response | body: ""}
+      else
+        %{response | body: Poison.decode!(response.body)}
+      end
     end
   end
 
