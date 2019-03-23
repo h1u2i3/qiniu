@@ -114,7 +114,7 @@ defmodule Qiniu.PutPolicy do
 
       iex> policy = %Qiniu.PutPolicy{scope: "scope", deadline: 1427990400, return_body: "body"}
       iex> Qiniu.PutPolicy.to_json(policy)
-      ~s({"scope":"scope","returnBody":"body","deadline":1427990400})
+      ~s({"deadline":1427990400,"returnBody":"body","scope":"scope"})
   """
   @spec to_json(PutPolicy.t) :: String.t
   def to_json(%PutPolicy{} = policy) do
@@ -123,7 +123,7 @@ defmodule Qiniu.PutPolicy do
       |> Enum.filter(fn {_, v} -> v != nil end)
       |> Enum.map(fn {k, v} -> {Qiniu.Utils.camelize(k), v} end)
       |> Enum.into(%{})
-      |> Poison.encode!
+      |> Jason.encode!
   end
 
   @doc """
