@@ -5,7 +5,7 @@ defmodule Qiniu.Fop.AV do
   """
   alias Qiniu.HTTP
 
-  def avthumb(bucket_name, key, opts \\ []) do
+  def avthumb(module \\ Qiniu, bucket_name, key, opts \\ []) do
     query_opts = opts |> Keyword.take([:notifyURL, :pipeline]) |> Enum.into(%{})
     fog_opts = opts |> Keyword.delete(:notifyURL) |> Keyword.delete(:pipeline)
 
@@ -18,7 +18,7 @@ defmodule Qiniu.Fop.AV do
       |> Map.merge(query_opts)
       |> URI.encode_query
 
-    HTTP.auth_post("#{Qiniu.config[:api_host]}/pfop/", body)
+    HTTP.auth_post(module, "#{module.config[:api_host]}/pfop/", body)
   end
 
 

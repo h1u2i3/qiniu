@@ -9,7 +9,7 @@ defmodule Qiniu.Fop do
     * url - URL of the image
     * level - level of the error correction("L", "M", "Q", "H"), "L" is the default
   """
-  def qrcode(url, level \\ "L") do
-    HTTP.get(url <> "?qrcode/0/level/#{level}")
+  def qrcode(module \\ Qiniu, url, level \\ "L") do
+    HTTP.get(module, url <> "?qrcode/0/level/#{level}")
   end
 end

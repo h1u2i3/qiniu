@@ -8,8 +8,8 @@ defmodule Qiniu.Fop.Image do
 
     * `url` - URL of the image, like http://qiniuphotos.qiniudn.com/gogopher.jpg
   """
-  def info(url) do
-    HTTP.get(url <> "?imageInfo")
+  def info(module \\ Qiniu, url) do
+    HTTP.get(module, url <> "?imageInfo")
   end
 
   @doc """
@@ -17,8 +17,8 @@ defmodule Qiniu.Fop.Image do
 
   See `info/1` for the arguments
   """
-  def exif(url) do
-    HTTP.get(url <> "?exif")
+  def exif(module \\ Qiniu, url) do
+    HTTP.get(module, url <> "?exif")
   end
 
   @doc """
@@ -49,22 +49,26 @@ defmodule Qiniu.Fop.Image do
     * `:dx`
     * `:dy`
   """
-  def watermark(type, image_url, watermark_url, opts \\ [])
-  def watermark(:image, image_url, watermark_url, opts) do
+  def watermark(module \\ Qiniu, type, image_url, watermark_url, opts \\ [])
+
+  def watermark(module, :image, image_url, watermark_url, opts) do
     valid_opts = Keyword.take(opts, [:dissolve, :gravity, :dx, :dy])
     params = Enum.map_join(valid_opts, "/", fn {k, v} -> "#{k}/#{v}" end)
     params = "?watermark/1/image/#{Base.url_encode64(watermark_url)}/" <> params
-    HTTP.get image_url <> params
+    HTTP.get(module, image_url <> params)
   end
 
-  def watermark(:text, image_url, text, opts) do
+  def watermark(module, :text, image_url, text, opts) do
     valid_opts = Keyword.take(opts, [:font, :font_size, :fill, :dissolve, :gravity, :dx, :dy])
-    params = Enum.map_join(valid_opts, "/", fn {k, v} ->
-      encoded_v = if k == :font || k == :fill, do: Base.url_encode64(v), else: v
-      "#{k}/#{encoded_v}"
-    end)
+
+    params =
+      Enum.map_join(valid_opts, "/", fn {k, v} ->
+        encoded_v = if k == :font || k == :fill, do: Base.url_encode64(v), else: v
+        "#{k}/#{encoded_v}"
+      end)
+
     params = "?watermark/2/text/#{Base.url_encode64(text)}/" <> params
-    HTTP.get image_url <> params
+    HTTP.get(module, image_url <> params)
   end
 
   @doc """
@@ -72,8 +76,7 @@ defmodule Qiniu.Fop.Image do
 
   See `info/1` for the arguments
   """
-  def avg_hue(url) do
-    HTTP.get(url <> "?imageAve")
+  def avg_hue(module \\ Qiniu, url) do
+    HTTP.get(module, url <> "?imageAve")
   end
-
 end
